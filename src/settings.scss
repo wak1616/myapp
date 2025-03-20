@@ -1,0 +1,7 @@
+@use 'vuetify/settings' with (
+  $color-pack: true,
+  $body-font-family: ('Inter', sans-serif),
+  $border-radius-root: 8px,
+  $button-text-transform: none,
+  $button-font-weight: 500
+); 
