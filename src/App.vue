@@ -1,7 +1,11 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, provide } from 'vue';
 import { useTheme } from 'vuetify';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
+
+// Router
+const router = useRouter();
 
 // API base URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
@@ -16,15 +20,52 @@ function toggleTheme() {
   darkMode.value = !darkMode.value;
 }
 
-// Demo state
-const activeTab = ref(0);
+// Shared state
 const loading = ref(false);
 const error = ref(null);
+
+// Conversation state
+const responseId = ref('');
+const conversationHistory = ref([]);
+
+// Models
+const models = [
+  { value: 'gpt-4o-mini', title: 'GPT-4o Mini' },
+  { value: 'gpt-4o', title: 'GPT-4o' },
+];
+const selectedModel = ref('gpt-4o-mini');
+
+// Computed properties
+const isConversationStarted = computed(() => responseId.value !== '');
+
+// Provide shared state to child components
+provide('API_BASE_URL', API_BASE_URL);
+provide('loading', loading);
+provide('error', error);
+provide('responseId', responseId);
+provide('conversationHistory', conversationHistory);
+provide('models', models);
+provide('selectedModel', selectedModel);
+
+// Navigation items
+const navItems = [
+  { title: 'Simple Prompt', to: '/', icon: 'mdi-message-text' },
+  { 
+    title: 'Continue Conversation', 
+    to: '/continue', 
+    icon: 'mdi-message-reply-text',
+    disabled: computed(() => !isConversationStarted.value)
+  },
+  { title: 'Web Search', to: '/websearch', icon: 'mdi-web' },
+  { title: 'Multimodal', to: '/multimodal', icon: 'mdi-image-text' },
+];
+
+// Demo state
+const activeTab = ref(0);
 
 // Simple prompt
 const simplePrompt = ref('Tell me a joke about programming');
 const simpleResponse = ref('');
-const responseId = ref('');
 
 // Continue conversation
 const continuePrompt = ref('');
@@ -42,16 +83,6 @@ const imageUrl = ref('');
 const imageFile = ref(null);
 const useWebSearch = ref(false);
 const previewUrl = ref('');
-
-// Models
-const models = [
-  { value: 'gpt-4o-mini', title: 'GPT-4o Mini' },
-  { value: 'gpt-4o', title: 'GPT-4o' },
-];
-const selectedModel = ref('gpt-4o-mini');
-
-// Conversation history
-const conversationHistory = ref([]);
 
 // Methods
 async function sendSimplePrompt() {
@@ -205,18 +236,35 @@ async function sendMultimodalPrompt() {
     loading.value = false;
   }
 }
-
-// Computed properties
-const isConversationStarted = computed(() => responseId.value !== '');
 </script>
 
 <template>
   <v-app>
     <!-- App Bar -->
-    <v-app-bar height="72">
+    <v-app-bar>
       <v-container>
-        <div class="d-flex align-center py-2">
+        <div class="d-flex align-center">
           <v-app-bar-title class="app-title">{{ title }}</v-app-bar-title>
+          
+          <!-- Navigation -->
+          <v-tabs 
+            color="primary"
+            class="ml-4"
+            hide-slider
+          >
+            <v-tab
+              v-for="item in navItems"
+              :key="item.title"
+              :to="item.to"
+              :disabled="item.disabled"
+              :prepend-icon="item.icon"
+              rounded
+              exact
+            >
+              {{ item.title }}
+            </v-tab>
+          </v-tabs>
+          
           <v-spacer></v-spacer>
           
           <!-- Theme Toggle -->
@@ -237,7 +285,7 @@ const isConversationStarted = computed(() => responseId.value !== '');
           <v-card-text>
             <p>
               This demo app showcases the capabilities of the OpenAI Responses API. 
-              Try out different features using the tabs below.
+              Use the navigation bar above to explore different features.
             </p>
           </v-card-text>
         </v-card>
@@ -253,237 +301,11 @@ const isConversationStarted = computed(() => responseId.value !== '');
           {{ error }}
         </v-alert>
         
-        <!-- API Demo Tabs -->
+        <!-- Router View -->
         <v-card>
-          <v-tabs
-            v-model="activeTab"
-            bg-color="primary"
-          >
-            <v-tab value="0">Simple Prompt</v-tab>
-            <v-tab value="1" :disabled="!isConversationStarted">Continue Conversation</v-tab>
-            <v-tab value="2">Web Search</v-tab>
-            <v-tab value="3">Multimodal</v-tab>
-          </v-tabs>
-          
-          <v-window v-model="activeTab">
-            <!-- Simple Prompt Tab -->
-            <v-window-item value="0">
-              <v-card-text>
-                <h3 class="text-h6 mb-2">Basic Text Prompt</h3>
-                <p class="mb-4">
-                  Try a simple text prompt with the Responses API.
-                </p>
-                
-                <v-select
-                  v-model="selectedModel"
-                  :items="models"
-                  label="Model"
-                  density="compact"
-                  class="mb-4"
-                ></v-select>
-                
-                <v-textarea
-                  v-model="simplePrompt"
-                  label="Your prompt"
-                  rows="3"
-                  auto-grow
-                  variant="outlined"
-                  class="mb-4"
-                  :disabled="loading"
-                ></v-textarea>
-                
-                <v-btn
-                  color="primary"
-                  block
-                  :loading="loading"
-                  @click="sendSimplePrompt"
-                  class="mb-6"
-                >
-                  Send
-                </v-btn>
-                
-                <v-divider class="mb-4"></v-divider>
-                
-                <div v-if="simpleResponse" class="response-container">
-                  <h4 class="text-subtitle-1 font-weight-bold mb-2">Response:</h4>
-                  <div class="response-text pa-4">
-                    <p style="white-space: pre-line">{{ simpleResponse }}</p>
-                  </div>
-                </div>
-              </v-card-text>
-            </v-window-item>
-            
-            <!-- Continue Conversation Tab -->
-            <v-window-item value="1">
-              <v-card-text>
-                <h3 class="text-h6 mb-2">Continue the Conversation</h3>
-                <p class="mb-4">
-                  The API maintains conversation state, so you can continue where you left off.
-                </p>
-                
-                <!-- Conversation History -->
-                <div class="conversation-container mb-4">
-                  <div
-                    v-for="(message, index) in conversationHistory"
-                    :key="index"
-                    :class="['message', message.role === 'user' ? 'user-message' : 'assistant-message']"
-                  >
-                    <div class="message-content">
-                      <p style="white-space: pre-line">{{ message.content }}</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <v-textarea
-                  v-model="continuePrompt"
-                  label="Your next message"
-                  rows="3"
-                  auto-grow
-                  variant="outlined"
-                  class="mb-4"
-                  :disabled="loading"
-                ></v-textarea>
-                
-                <v-btn
-                  color="primary"
-                  block
-                  :loading="loading"
-                  @click="sendContinuePrompt"
-                >
-                  Continue Conversation
-                </v-btn>
-              </v-card-text>
-            </v-window-item>
-            
-            <!-- Web Search Tab -->
-            <v-window-item value="2">
-              <v-card-text>
-                <h3 class="text-h6 mb-2">Web Search Tool</h3>
-                <p class="mb-4">
-                  The Responses API can use OpenAI's web search tool to find information online.
-                </p>
-                
-                <v-textarea
-                  v-model="webSearchPrompt"
-                  label="Ask a question that requires web search"
-                  rows="3"
-                  auto-grow
-                  variant="outlined"
-                  class="mb-4"
-                  :disabled="loading"
-                ></v-textarea>
-                
-                <v-btn
-                  color="primary"
-                  block
-                  :loading="loading"
-                  @click="sendWebSearchPrompt"
-                  class="mb-6"
-                >
-                  Search & Answer
-                </v-btn>
-                
-                <v-divider class="mb-4"></v-divider>
-                
-                <div v-if="webSearchResponse" class="response-container">
-                  <h4 class="text-subtitle-1 font-weight-bold mb-2">Response:</h4>
-                  <div class="response-text pa-4">
-                    <p style="white-space: pre-line">{{ webSearchResponse }}</p>
-                  </div>
-                  
-                  <div v-if="webSearchResults.length" class="mt-4">
-                    <h4 class="text-subtitle-1 font-weight-bold mb-2">Sources:</h4>
-                    <ul>
-                      <li v-for="(result, index) in webSearchResults" :key="index" class="mb-2">
-                        <template v-if="result.url">
-                          <a :href="result.url" target="_blank" class="source-link">
-                            {{ result.title || result.url }}
-                          </a>
-                        </template>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </v-card-text>
-            </v-window-item>
-            
-            <!-- Multimodal Tab -->
-            <v-window-item value="3">
-              <v-card-text>
-                <h3 class="text-h6 mb-2">Multimodal (Text + Image)</h3>
-                <p class="mb-4">
-                  The Responses API can process both text and images in a single request.
-                </p>
-                
-                <div class="mb-4">
-                  <label for="image-upload" class="d-block mb-2">Upload an image:</label>
-                  <input 
-                    type="file" 
-                    id="image-upload" 
-                    accept="image/*"
-                    @change="handleImageUpload"
-                    :disabled="loading"
-                    class="d-none"
-                  >
-                  <v-btn
-                    color="primary" 
-                    @click="$refs.fileInput.click()"
-                    :disabled="loading"
-                    prepend-icon="mdi-image"
-                  >
-                    Choose Image
-                  </v-btn>
-                  <input
-                    ref="fileInput"
-                    type="file"
-                    @change="handleImageUpload"
-                    accept="image/*"
-                    class="d-none"
-                  >
-                </div>
-                
-                <div v-if="previewUrl" class="image-preview mb-4">
-                  <img :src="previewUrl" alt="Preview" class="preview-image">
-                </div>
-                
-                <v-textarea
-                  v-model="multimodalPrompt"
-                  label="Ask about the image"
-                  rows="3"
-                  auto-grow
-                  variant="outlined"
-                  class="mb-4"
-                  :disabled="loading || !imageUrl"
-                ></v-textarea>
-                
-                <v-checkbox
-                  v-model="useWebSearch"
-                  label="Use web search alongside image analysis"
-                  class="mb-4"
-                ></v-checkbox>
-                
-                <v-btn
-                  color="primary"
-                  block
-                  :loading="loading"
-                  @click="sendMultimodalPrompt"
-                  :disabled="!imageUrl"
-                  class="mb-6"
-                >
-                  Analyze Image
-                </v-btn>
-                
-                <v-divider class="mb-4"></v-divider>
-                
-                <div v-if="multimodalResponse" class="response-container">
-                  <h4 class="text-subtitle-1 font-weight-bold mb-2">Response:</h4>
-                  <div class="response-text pa-4">
-                    <p style="white-space: pre-line">{{ multimodalResponse }}</p>
-                  </div>
-                </div>
-              </v-card-text>
-            </v-window-item>
-          </v-window>
+          <v-card-text>
+            <router-view></router-view>
+          </v-card-text>
         </v-card>
       </v-container>
     </v-main>

@@ -11,6 +11,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
 import { createApp } from 'vue'
 import App from './App.vue'
+import router from './router'
 
 const vuetify = createVuetify({
   blueprint: md3,
@@ -54,4 +55,5 @@ const vuetify = createVuetify({
 
 createApp(App)
   .use(vuetify)
+  .use(router)
   .mount('#app')
