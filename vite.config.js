@@ -26,5 +26,26 @@ export default defineConfig({
       // Allow serving files from these directories
       allow: ['..', 'node_modules'],
     },
+  },
+  // Build configuration for production
+  build: {
+    // Generate source maps for better debugging
+    sourcemap: true,
+    // Rollup options
+    rollupOptions: {
+      // Make sure to exclude these dependencies from the bundle
+      external: [],
+      output: {
+        // Chunk naming and organization
+        manualChunks: {
+          'vue-vendor': ['vue', 'vue-router'],
+          'vuetify-vendor': ['vuetify']
+        }
+      }
+    }
+  },
+  // Ensure Vue Router is pre-bundled
+  optimizeDeps: {
+    include: ['vue-router']
   }
 })
