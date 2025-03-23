@@ -489,8 +489,8 @@ const isConversationStarted = computed(() => responseId.value !== '');
     </v-main>
 
     <!-- Footer -->
-    <v-footer class="bg-surface-variant">
-      <v-container>
+    <v-footer class="bg-surface-variant" dense height="40">
+      <v-container class="py-1">
         <div class="text-center">
           &copy; {{ new Date().getFullYear() }} — <strong>{{ title }}</strong>
         </div>
@@ -611,5 +611,15 @@ const isConversationStarted = computed(() => responseId.value !== '');
 
 .source-link:hover {
   text-decoration: underline;
+}
+
+.v-footer {
+  min-height: 40px !important;
+  max-height: 40px !important;
+}
+
+.v-footer .v-container {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
 }
 </style>
