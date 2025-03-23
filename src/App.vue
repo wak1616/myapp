@@ -39,7 +39,10 @@ const models = [
 const selectedModel = ref('gpt-4o-mini');
 
 // Computed properties
-const isConversationStarted = computed(() => responseId.value !== '');
+const isConversationStarted = computed(() => {
+  console.log('Checking conversation started. responseId:', responseId.value);
+  return responseId.value !== '';
+});
 
 // Provide shared state to child components
 provide('API_BASE_URL', API_BASE_URL);
@@ -51,17 +54,17 @@ provide('models', models);
 provide('selectedModel', selectedModel);
 
 // Navigation items
-const navItems = [
+const navItems = computed(() => [
   { title: 'Simple Prompt', to: '/', icon: 'mdi-message-text' },
   { 
     title: 'Continue Conversation', 
     to: '/continue', 
     icon: 'mdi-message-reply-text',
-    disabled: computed(() => !isConversationStarted.value)
+    disabled: !isConversationStarted.value
   },
   { title: 'Web Search', to: '/websearch', icon: 'mdi-web' },
   { title: 'Multimodal', to: '/multimodal', icon: 'mdi-image-text' },
-];
+]);
 
 // Demo state
 const activeTab = ref(0);

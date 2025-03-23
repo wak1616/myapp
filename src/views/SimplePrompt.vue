@@ -28,7 +28,8 @@ async function sendSimplePrompt() {
     });
     
     simpleResponse.value = response.data.text;
-    responseId.value = response.data.id;
+    console.log('Response from API:', response.data);
+    responseId.value = response.data.id || 'temp-id-' + Date.now();
     
     // Add to conversation history
     conversationHistory.value.push({
