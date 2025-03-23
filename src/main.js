@@ -4,6 +4,7 @@ import './assets/main.css'
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
 import { createVuetify } from 'vuetify'
+import { md3 } from 'vuetify/blueprints'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
@@ -12,6 +13,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 
 const vuetify = createVuetify({
+  blueprint: md3,
   components,
   directives,
   theme: {
@@ -20,27 +22,23 @@ const vuetify = createVuetify({
       light: {
         dark: false,
         colors: {
-          primary: '#3f51b5',   // Indigo
-          secondary: '#673ab7', // Deep Purple
-          accent: '#2196f3',    // Blue
-          error: '#f44336',     // Red
-          info: '#00bcd4',      // Cyan
-          success: '#4caf50',   // Green
-          warning: '#ff9800',   // Orange
-          background: '#f5f5f5' // Light gray background
+          primary: '#6750a4',   // MD3 default primary
+          secondary: '#625b71', // MD3 secondary
+          tertiary: '#7d5260',  // MD3 tertiary
+          error: '#b3261e',     // MD3 error
+          surface: '#fffbff',   // MD3 surface
+          background: '#fffbff' // MD3 background
         }
       },
       dark: {
         dark: true,
         colors: {
-          primary: '#7986cb',    // Lighter Indigo for dark mode
-          secondary: '#9575cd',  // Lighter Deep Purple
-          accent: '#64b5f6',     // Lighter Blue
-          error: '#e57373',      // Lighter Red
-          info: '#4dd0e1',       // Lighter Cyan
-          success: '#81c784',    // Lighter Green
-          warning: '#ffb74d',    // Lighter Orange
-          background: '#121212'  // Dark background
+          primary: '#d0bcff',   // MD3 dark mode primary
+          secondary: '#ccc2dc', // MD3 dark mode secondary
+          tertiary: '#efb8c8',  // MD3 dark mode tertiary
+          error: '#f2b8b5',     // MD3 dark mode error
+          surface: '#141218',   // MD3 dark mode surface
+          background: '#141218' // MD3 dark mode background
         }
       }
     }
