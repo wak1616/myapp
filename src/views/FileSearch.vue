@@ -179,7 +179,7 @@ function resetState() {
           density="compact"
           class="mb-4"
         >
-          Vector store created: {{ vectorStoreName }}
+          File uploaded successfully
         </v-alert>
       </v-card-text>
     </v-card>
