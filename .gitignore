@@ -32,3 +32,8 @@ coverage
 .env.*
 !.env.example 
 .vercel
+
+# Backend
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
