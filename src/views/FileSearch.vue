@@ -8,7 +8,7 @@ const loading = inject('loading');
 const error = inject('error');
 
 // File Search State
-const pdfsUploaded = ref(false);
+const filesUploaded = ref(false);
 const vectorStoreId = ref('');
 const vectorStoreName = ref('');
 const selectedFiles = ref([]);
@@ -44,7 +44,7 @@ async function handleFileUpload(event) {
       formData.append('file', file);
       formData.append('vector_store_id', vectorStoreId.value);
       
-      const uploadResponse = await axios.post(`${API_BASE_URL}/upload-pdf`, formData, {
+      const uploadResponse = await axios.post(`${API_BASE_URL}/upload-file`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -59,11 +59,11 @@ async function handleFileUpload(event) {
       });
     }
     
-    pdfsUploaded.value = true;
+    filesUploaded.value = true;
     selectedFiles.value = [];
     
   } catch (err) {
-    error.value = err.message || 'Failed to upload PDFs';
+    error.value = err.message || 'Failed to upload files';
     console.error(err);
   } finally {
     loading.value = false;
@@ -85,7 +85,7 @@ async function sendSearchQuery() {
   }
   
   if (!vectorStoreId.value) {
-    error.value = 'Please upload PDF files first';
+    error.value = 'Please upload files first';
     return;
   }
   
@@ -124,18 +124,18 @@ function resetState() {
   <div>
     <h3 class="text-h6 mb-2">File Search (RAG)</h3>
     <p class="mb-4">
-      Upload PDF files and ask questions about their content using OpenAI's Retrieval-Augmented Generation.
+      Upload documents (PDF, Word, etc.) and ask questions about their content using OpenAI's Retrieval-Augmented Generation.
     </p>
     
     <v-card class="mb-6 pa-4">
-      <v-card-title>1. Upload PDF Files</v-card-title>
+      <v-card-title>1. Upload Documents</v-card-title>
       <v-card-text>
         <div class="mb-4">
-          <label for="pdf-upload" class="d-block mb-2">Upload PDF files:</label>
+          <label for="pdf-upload" class="d-block mb-2">Upload documents (PDF, Word, etc.):</label>
           <input 
             type="file" 
             id="pdf-upload" 
-            accept="application/pdf"
+            accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
             multiple
             @change="handleFileUpload"
             :disabled="loading"
@@ -147,13 +147,13 @@ function resetState() {
             :disabled="loading"
             prepend-icon="mdi-file-pdf-box"
           >
-            Choose PDF Files
+            Choose Files
           </v-btn>
           <input
             ref="fileInput"
             type="file"
             @change="handleFileUpload"
-            accept="application/pdf"
+            accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
             multiple
             class="d-none"
           >
@@ -174,7 +174,7 @@ function resetState() {
         </div>
         
         <v-alert
-          v-if="pdfsUploaded"
+          v-if="filesUploaded"
           type="success"
           density="compact"
           class="mb-4"
@@ -189,12 +189,12 @@ function resetState() {
       <v-card-text>
         <v-textarea
           v-model="searchQuery"
-          label="What would you like to ask about these PDFs?"
+          label="What would you like to ask about these documents?"
           rows="3"
           auto-grow
           variant="outlined"
           class="mb-4"
-          :disabled="loading || !pdfsUploaded"
+          :disabled="loading || !filesUploaded"
         ></v-textarea>
         
         <div class="d-flex justify-end mb-4">
@@ -203,7 +203,7 @@ function resetState() {
             size="large"
             :loading="loading"
             @click="sendSearchQuery"
-            :disabled="!pdfsUploaded || !searchQuery"
+            :disabled="!filesUploaded || !searchQuery"
             min-width="120"
             class="mr-2"
           >
