@@ -63,6 +63,7 @@ const navItems = computed(() => [
     disabled: !isConversationStarted.value
   },
   { title: 'Web Search', to: '/websearch', icon: 'mdi-web' },
+  { title: 'File Search', to: '/filesearch', icon: 'mdi-file-search' },
   { title: 'Multimodal', to: '/multimodal', icon: 'mdi-image-text' },
 ]);
 

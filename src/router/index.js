@@ -6,6 +6,7 @@ const SimplePrompt = () => import('../views/SimplePrompt.vue')
 const ContinueConversation = () => import('../views/ContinueConversation.vue')
 const WebSearch = () => import('../views/WebSearch.vue')
 const Multimodal = () => import('../views/Multimodal.vue')
+const FileSearch = () => import('../views/FileSearch.vue')
 
 const router = createRouter({
   history: createWebHistory('/'),
@@ -24,6 +25,11 @@ const router = createRouter({
       path: '/websearch',
       name: 'web-search',
       component: WebSearch
+    },
+    {
+      path: '/filesearch',
+      name: 'file-search',
+      component: FileSearch
     },
     {
       path: '/multimodal',
