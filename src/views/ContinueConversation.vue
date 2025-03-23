@@ -92,7 +92,7 @@ async function sendContinuePrompt() {
     
     <v-textarea
       v-model="continuePrompt"
-      label="Your next message"
+      label="Your message"
       rows="3"
       auto-grow
       variant="outlined"
@@ -100,14 +100,17 @@ async function sendContinuePrompt() {
       :disabled="loading || !isConversationStarted"
     ></v-textarea>
     
-    <v-btn
-      color="primary"
-      block
-      :loading="loading"
-      @click="sendContinuePrompt"
-      :disabled="!isConversationStarted"
-    >
-      Continue Conversation
-    </v-btn>
+    <div class="d-flex justify-end mb-6">
+      <v-btn
+        color="primary"
+        size="large"
+        :loading="loading"
+        @click="sendContinuePrompt"
+        :disabled="!isConversationStarted"
+        min-width="120"
+      >
+        Send
+      </v-btn>
+    </div>
   </div>
 </template> 

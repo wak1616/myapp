@@ -74,15 +74,17 @@ async function sendSimplePrompt() {
       :disabled="loading"
     ></v-textarea>
     
-    <v-btn
-      color="primary"
-      block
-      :loading="loading"
-      @click="sendSimplePrompt"
-      class="mb-6"
-    >
-      Send
-    </v-btn>
+    <div class="d-flex justify-end mb-6">
+      <v-btn
+        color="primary"
+        size="large"
+        :loading="loading"
+        @click="sendSimplePrompt"
+        min-width="120"
+      >
+        Send
+      </v-btn>
+    </div>
     
     <v-divider class="mb-4"></v-divider>
     

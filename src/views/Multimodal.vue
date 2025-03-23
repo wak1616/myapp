@@ -115,12 +115,12 @@ async function sendMultimodalPrompt() {
     
     <v-textarea
       v-model="multimodalPrompt"
-      label="Ask about the image"
+      label="What would you like to ask about this image?"
       rows="3"
       auto-grow
       variant="outlined"
       class="mb-4"
-      :disabled="loading || !imageUrl"
+      :disabled="loading || !previewUrl"
     ></v-textarea>
     
     <v-checkbox
@@ -129,16 +129,18 @@ async function sendMultimodalPrompt() {
       class="mb-4"
     ></v-checkbox>
     
-    <v-btn
-      color="primary"
-      block
-      :loading="loading"
-      @click="sendMultimodalPrompt"
-      :disabled="!imageUrl"
-      class="mb-6"
-    >
-      Analyze Image
-    </v-btn>
+    <div class="d-flex justify-end mb-6">
+      <v-btn
+        color="primary"
+        size="large"
+        :loading="loading"
+        @click="sendMultimodalPrompt"
+        :disabled="!previewUrl"
+        min-width="120"
+      >
+        Analyze
+      </v-btn>
+    </div>
     
     <v-divider class="mb-4"></v-divider>
     

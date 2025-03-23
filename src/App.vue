@@ -13,12 +13,15 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
 // Theme settings
 const theme = useTheme();
 const title = ref('OpenAI Responses API Demo');
-const darkMode = ref(false);
+const darkMode = ref(true);
 
 function toggleTheme() {
   theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark';
   darkMode.value = !darkMode.value;
 }
+
+// Set initial theme to dark
+theme.global.name.value = 'dark';
 
 // Shared state
 const loading = ref(false);
@@ -241,16 +244,25 @@ async function sendMultimodalPrompt() {
 <template>
   <v-app>
     <!-- App Bar -->
-    <v-app-bar>
-      <v-container>
-        <div class="d-flex align-center">
-          <v-app-bar-title class="app-title">{{ title }}</v-app-bar-title>
+    <v-app-bar height="auto">
+      <v-container class="py-3">
+        <div class="d-flex flex-column w-100">
+          <div class="d-flex align-center mb-2">
+            <div class="app-title-container">
+              <span class="app-title">{{ title }}</span>
+            </div>
+            <v-spacer></v-spacer>
+            <v-btn icon size="small" class="mt-1" @click="toggleTheme">
+              <v-icon>{{ darkMode ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
+            </v-btn>
+          </div>
           
           <!-- Navigation -->
           <v-tabs 
             color="primary"
-            class="ml-4"
             hide-slider
+            density="comfortable"
+            class="mb-1"
           >
             <v-tab
               v-for="item in navItems"
@@ -260,17 +272,11 @@ async function sendMultimodalPrompt() {
               :prepend-icon="item.icon"
               rounded
               exact
+              density="compact"
             >
               {{ item.title }}
             </v-tab>
           </v-tabs>
-          
-          <v-spacer></v-spacer>
-          
-          <!-- Theme Toggle -->
-          <v-btn icon @click="toggleTheme">
-            <v-icon>{{ darkMode ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
-          </v-btn>
         </div>
       </v-container>
     </v-app-bar>
@@ -322,27 +328,32 @@ async function sendMultimodalPrompt() {
 </template>
 
 <style scoped>
+.app-title-container {
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+}
+
 .app-title {
   font-family: 'Inter', sans-serif;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 600;
   letter-spacing: -0.5px;
-  line-height: 1.5;
-  padding: 4px 0;
+  line-height: 1.4;
 }
 
 @media (max-width: 600px) {
   .app-title {
-    font-size: 1.2rem;
-    line-height: 1.8rem;
+    font-size: 1.3rem;
   }
 }
 
-.v-app-bar-title {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.8rem !important;
-  font-weight: 600;
-  letter-spacing: -0.5px;
+.v-app-bar {
+  padding: 8px 0;
+}
+
+.v-tabs {
+  min-height: 48px;
 }
 
 .v-card {
@@ -357,6 +368,9 @@ async function sendMultimodalPrompt() {
 
 .v-container {
   max-width: 1200px;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+  width: 100%;
 }
 
 .response-container {

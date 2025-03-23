@@ -44,7 +44,7 @@ async function sendWebSearchPrompt() {
     
     <v-textarea
       v-model="webSearchPrompt"
-      label="Ask a question that requires web search"
+      label="Ask a question that requires current information"
       rows="3"
       auto-grow
       variant="outlined"
@@ -52,15 +52,17 @@ async function sendWebSearchPrompt() {
       :disabled="loading"
     ></v-textarea>
     
-    <v-btn
-      color="primary"
-      block
-      :loading="loading"
-      @click="sendWebSearchPrompt"
-      class="mb-6"
-    >
-      Search & Answer
-    </v-btn>
+    <div class="d-flex justify-end mb-6">
+      <v-btn
+        color="primary"
+        size="large"
+        :loading="loading"
+        @click="sendWebSearchPrompt"
+        min-width="120"
+      >
+        Search
+      </v-btn>
+    </div>
     
     <v-divider class="mb-4"></v-divider>
     
