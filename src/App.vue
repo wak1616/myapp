@@ -12,7 +12,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
 
 // Theme settings
 const theme = useTheme();
-const title = ref('OpenAI Responses API Demo');
+const title = ref('De Rojas App');
 const darkMode = ref(true);
 
 function toggleTheme() {
@@ -249,6 +249,7 @@ async function sendMultimodalPrompt() {
         <div class="d-flex flex-column w-100">
           <div class="d-flex align-center mb-2">
             <div class="app-title-container">
+              <img src="/logo.png" alt="Logo" class="app-logo mr-2" />
               <span class="app-title">{{ title }}</span>
             </div>
             <v-spacer></v-spacer>
@@ -263,6 +264,8 @@ async function sendMultimodalPrompt() {
             hide-slider
             density="comfortable"
             class="mb-1"
+            show-arrows
+            slider-color="primary"
           >
             <v-tab
               v-for="item in navItems"
@@ -332,6 +335,13 @@ async function sendMultimodalPrompt() {
   padding: 12px 0;
   display: flex;
   align-items: center;
+}
+
+.app-logo {
+  height: 36px;
+  width: 36px;
+  object-fit: contain;
+  background-color: transparent;
 }
 
 .app-title {

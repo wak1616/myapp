@@ -1,4 +1,5 @@
 import './assets/main.css'
+import './settings.scss'
 
 // Vuetify
 import 'vuetify/styles'
@@ -23,7 +24,7 @@ const vuetify = createVuetify({
       light: {
         dark: false,
         colors: {
-          primary: '#6750a4',   // MD3 default primary
+          primary: '#1565C0',   // Lightened royal blue
           secondary: '#625b71', // MD3 secondary
           tertiary: '#7d5260',  // MD3 tertiary
           error: '#b3261e',     // MD3 error
@@ -34,7 +35,7 @@ const vuetify = createVuetify({
       dark: {
         dark: true,
         colors: {
-          primary: '#d0bcff',   // MD3 dark mode primary
+          primary: '#5B7CE2',   // Lightened royal blue for dark mode
           secondary: '#ccc2dc', // MD3 dark mode secondary
           tertiary: '#efb8c8',  // MD3 dark mode tertiary
           error: '#f2b8b5',     // MD3 dark mode error
